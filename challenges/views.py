@@ -2,6 +2,7 @@ from django.http import HttpResponseNotFound
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.urls import reverse
 
 # Create your views here.
 challenges = {
@@ -19,6 +20,19 @@ challenges = {
     "december" : "Listen Podcast for 30 minutes",
 }
 
+
+def index(request):
+    output = "<ul>"
+    list_of_months = list(challenges.keys())
+    
+    for i in range(12):
+        redirected_path = reverse("monthly-challenge", args = [list_of_months[i]])
+        output = output+f" <li> <a href='{redirected_path}'>{list_of_months[i].upper()}</a> </li>"
+    output = output+ "</ul>"
+   
+    return HttpResponse(output)
+
+
 def monthly_challenges(request, month):
     try:
         return HttpResponse(challenges[month])
@@ -32,6 +46,9 @@ def monthly_challenges_in_numbers(request, month):
     except Exception as e:
         print(e)    
         return HttpResponseNotFound(f"Please givve us valid input in between {challenges.keys()} ")    
+
+
+
 
 # def january(request):
 #     return HttpResponse("Hello Dude!!!")
