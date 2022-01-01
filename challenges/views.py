@@ -3,49 +3,61 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.urls import reverse
+from django.template.loader import render_to_string
+from django.http import Http404
 
 # Create your views here.
 challenges = {
-    "january": "Walk for 30 minutes",
-    "february": "Yoga for 10 minutes",
-    "march" : "Leanr new skill every day for 30 minutes",
-    "april" : "Listen Podcast for 30 minutes",
-    "may" : "Listen Podcast for 30 minutes",
-    "june" : "Listen Podcast for 30 minutes",
-    "july" : "Listen Podcast for 30 minutes",
-    "august" : "Listen Podcast for 30 minutes",
-    "september" : "Listen Podcast for 30 minutes",
-    "october" : "Listen Podcast for 30 minutes",
-    "november" : "Listen Podcast for 30 minutes",
-    "december" : "Listen Podcast for 30 minutes",
+    "january": "Eat a food you’ve never tried before.",
+    "february": "Visit a nearby town–staying the weekend is optional.",
+    "march" : "Try a different way of getting to work – walking, cycling, taking the bus, or even skating.",
+    "april" : "Go geocaching – an outdoor recreational activity that involves hunting for hidden objects using GPS coordinates posted on a website.",
+    "may" : "Sleep under the moon (it can even be in your own backyard).",
+    "june" : "Swim in the wild – find a river or a lake, and jump in.",
+    "july" : "Go to a beach you’ve never been to before (bonus points if you try a new water sport).",
+    "august" : "Spend a day eating only what you catch or forage.",
+    "september" : "Climb a hill and have a picnic when you get to the top.",
+    "october" : "Get on the subway and go to the end of the line.",
+    "november" : "Be a tourist in your own town – visit a place in your town",
+    "december" : None,
 }
 
 
-def index(request):
-    output = "<ul>"
-    list_of_months = list(challenges.keys())
+def monthly_challenges(request,month):
     
-    for i in range(12):
-        redirected_path = reverse("monthly-challenge", args = [list_of_months[i]])
-        output = output+f" <li> <a href='{redirected_path}'>{list_of_months[i].upper()}</a> </li>"
-    output = output+ "</ul>"
-   
-    return HttpResponse(output)
+    # try:
+        challenge = challenges[month]
+        return render(request, "challenges/monthly_challenges.html", {
+            "challenge": challenge,
+            "month" : month
+        })
+    # except:
+    #     raise Http404() # it will automatically pick 404.html file form the templates folder in the root directory. In the Debug=True we can't see that page also. but it will work in the production.
+
+    #     # render_result = render_to_string("404.html")
+    #     # return HttpResponseNotFound(render_result)
 
 
-def monthly_challenges(request, month):
-    try:
-        return HttpResponse(challenges[month])
-    except:
-        return HttpResponseNotFound(f"Please give us a valid input in between {challenges.keys()}")    
+def index(request):
+    list_of_months = list(challenges.keys())
+    return render(request, "challenges/index.html", {
+        "months": list_of_months,
+    })
 
-def monthly_challenges_in_numbers(request, month):
-    try: 
-        # return HttpResponse(challenges[list(challenges.keys())[month-1]])
-        return HttpResponseRedirect(f"/challenges/{list(challenges.keys())[month-1]}")
-    except Exception as e:
-        print(e)    
-        return HttpResponseNotFound(f"Please givve us valid input in between {challenges.keys()} ")    
+
+# def monthly_challenges(request, month):
+#     try:
+#         return HttpResponse(challenges[month])
+#     except:
+#         return HttpResponseNotFound(f"Please give us a valid input in between {challenges.keys()}")    
+
+# def monthly_challenges_in_numbers(request, month):
+#     try: 
+#         # return HttpResponse(challenges[list(challenges.keys())[month-1]])
+#         return HttpResponseRedirect(f"/challenges/{list(challenges.keys())[month-1]}")
+#     except Exception as e:
+#         print(e)    
+#         return HttpResponseNotFound(f"Please givve us valid input in between {challenges.keys()} ")    
 
 
 

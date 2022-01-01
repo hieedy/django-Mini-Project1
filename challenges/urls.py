@@ -9,7 +9,7 @@ urlpatterns = [
     # path("<double:is_it>", views.bool_testing), invalid
 
     path("", views.index, name="index-page"),
-    path("<int:month>", views.monthly_challenges_in_numbers),
+    # path("<int:month>", views.monthly_challenges_in_numbers),
     path("<str:month>", views.monthly_challenges, name="monthly-challenge"),
    
     
